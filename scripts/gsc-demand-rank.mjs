@@ -36,7 +36,11 @@ const findCol = (re) => header.findIndex((h) => re.test(h));
 
 const iUrl = 0;
 const iImp = findCol(/impression|展示/i);
-const iPos = findCol(/position|排名/i);
+// 中文导出的第一列叫「排名靠前的网页」，宽匹配会把它当成排名列，导致位置全读成 0、
+// 需求量退化成曝光数。这里只认整列名就是 Position / 排名 的那一列。
+const iPos = header.findIndex(
+  (h, i) => i !== iUrl && /^(average\s*)?(position|排名)$/i.test(h),
+);
 const iClick = findCol(/click|点击/i);
 
 if (iImp === -1 || iPos === -1) {
